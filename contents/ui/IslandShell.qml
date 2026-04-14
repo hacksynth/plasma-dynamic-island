@@ -1,46 +1,51 @@
 import QtQuick
-import QtQuick.Effects
-import "."
 
 Item {
     id: shell
 
-    implicitWidth: IslandController.targetWidth + Theme.shadowPad * 2
-    implicitHeight: IslandController.targetHeight + Theme.shadowPad * 2 + Theme.panelGap
+    implicitWidth: IslandController.targetWidth
+    implicitHeight: IslandController.targetHeight
 
     Item {
         id: capsule
-        width: IslandController.targetWidth
-        height: IslandController.targetHeight
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: Theme.shadowPad + Theme.panelGap
+        anchors.fill: parent
+        clip: true
+
+        readonly property real radius: height / 2
 
         Behavior on width  { SpringAnimation { spring: Theme.springSpring; damping: Theme.springDamping; epsilon: Theme.springEpsilon } }
         Behavior on height { SpringAnimation { spring: Theme.springSpring; damping: Theme.springDamping; epsilon: Theme.springEpsilon } }
 
-        // PHASE-2 TODO: once width/height animates, layer.enabled on the morphing
-        // capsule will realloc FBO every frame. Move layer.enabled to a fixed-size
-        // outer container and let the inner rect animate freely inside it.
-        layer.enabled: true
-
         Rectangle {
+            id: bg
             anchors.fill: parent
             color: Theme.islandBg
-            radius: height / 2
+            radius: capsule.radius
             antialiasing: true
         }
-    }
 
-    MultiEffect {
-        anchors.fill: capsule
-        source: capsule
-        shadowEnabled: true
-        blurEnabled: false
-        shadowBlur: Theme.shadowBlur
-        shadowColor: Theme.shadowColor
-        shadowVerticalOffset: Theme.shadowOffsetY
-        shadowHorizontalOffset: Theme.shadowOffsetX
-        z: -1
+        Rectangle {
+            id: gloss
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            height: parent.height * Theme.glossHeightRatio
+            radius: capsule.radius
+            antialiasing: true
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Theme.glossTop }
+                GradientStop { position: 1.0; color: "transparent" }
+            }
+        }
+
+        Rectangle {
+            id: stroke
+            anchors.fill: parent
+            color: "transparent"
+            radius: capsule.radius
+            antialiasing: true
+            border.color: Theme.strokeColor
+            border.width: Theme.strokeWidth
+        }
     }
 }

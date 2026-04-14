@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Layouts
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasmoid
 
@@ -14,11 +15,11 @@ PlasmoidItem {
 
     fullRepresentation: Item {}
 
-    compactRepresentation: Item {
-        id: anchor
-
-        implicitWidth: Theme.idleWidth
-        implicitHeight: Theme.fallbackHeight
+    compactRepresentation: IslandShell {
+        Layout.preferredWidth: IslandController.targetWidth
+        Layout.minimumWidth: IslandController.targetWidth
+        Layout.maximumWidth: IslandController.targetWidth
+        Layout.fillHeight: true
 
         readonly property int panelThickness: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
             ? height
@@ -26,9 +27,5 @@ PlasmoidItem {
 
         onPanelThicknessChanged: IslandController.targetHeight = panelThickness
         Component.onCompleted: IslandController.targetHeight = panelThickness
-
-        IslandWindow {
-            visualParent: anchor
-        }
     }
 }

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Effects
+import "."
 
 Item {
     id: shell

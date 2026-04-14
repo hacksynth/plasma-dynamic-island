@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Layouts
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasmoid
 
@@ -9,15 +8,17 @@ PlasmoidItem {
     id: root
 
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
-    preferredRepresentation: compactRepresentation
+
+    switchWidth: 9999
+    switchHeight: 9999
+
+    fullRepresentation: Item {}
 
     compactRepresentation: Item {
         id: anchor
 
-        Layout.minimumWidth: Theme.idleWidth
-        Layout.preferredWidth: Theme.idleWidth
-        Layout.maximumWidth: Theme.idleWidth
-        Layout.fillHeight: true
+        implicitWidth: Theme.idleWidth
+        implicitHeight: Theme.fallbackHeight
 
         readonly property int panelThickness: Plasmoid.formFactor === PlasmaCore.Types.Horizontal
             ? height

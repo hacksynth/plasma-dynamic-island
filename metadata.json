@@ -7,13 +7,12 @@
         "Version": "0.1.0",
         "EnabledByDefault": true,
         "License": "GPL-2.0-or-later",
-        "FormFactors": ["horizontal"],
+        "Icon": "preferences-system-notifications",
+        "FormFactors": ["planar", "horizontal", "vertical", "mediacenter"],
         "Authors": [
             { "Name": "hacksynth" }
         ],
         "Category": "Utilities"
     },
-    "X-Plasma-API-Minimum-Version": "6.0",
-    "X-Plasma-API": "declarativeappletscript",
-    "X-Plasma-MainScript": "ui/main.qml"
+    "X-Plasma-API-Minimum-Version": "6.0"
 }

@@ -8,19 +8,31 @@ Item {
 
     Item {
         id: capsule
-        anchors.fill: parent
+        width: IslandController.targetWidth
+        height: IslandController.targetHeight
+        anchors.centerIn: parent
         clip: true
 
-        readonly property real radius: height / 2
-
-        Behavior on width  { SpringAnimation { spring: Theme.springSpring; damping: Theme.springDamping; epsilon: Theme.springEpsilon } }
-        Behavior on height { SpringAnimation { spring: Theme.springSpring; damping: Theme.springDamping; epsilon: Theme.springEpsilon } }
+        Behavior on width {
+            SpringAnimation {
+                spring: Theme.springSpring
+                damping: Theme.springDamping
+                epsilon: Theme.springEpsilon
+            }
+        }
+        Behavior on height {
+            SpringAnimation {
+                spring: Theme.springSpring
+                damping: Theme.springDamping
+                epsilon: Theme.springEpsilon
+            }
+        }
 
         Rectangle {
             id: bg
             anchors.fill: parent
             color: Theme.islandBg
-            radius: capsule.radius
+            radius: height / 2
             antialiasing: true
         }
     }

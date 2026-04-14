@@ -5,6 +5,8 @@ import QtQuick
 QtObject {
     readonly property color islandBg: "#131316"
 
+    // Visually tuned. Not aspect-locked to panelThickness — the capsule's
+    // idle shape is a fixed strip, not a proportional pill.
     readonly property int idleWidth: 140
     readonly property int fallbackHeight: 28
     readonly property int panelGap: 4

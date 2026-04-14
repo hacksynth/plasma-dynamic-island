@@ -19,6 +19,11 @@ PlasmoidItem {
         Layout.preferredWidth: IslandController.targetWidth
         Layout.minimumWidth: IslandController.targetWidth
         Layout.maximumWidth: IslandController.targetWidth
+        // Floating-panel applets receive a slot ~6px shorter than raw panel
+        // thickness (containmentDisplayHints & ContainmentPrefersFloatingApplets).
+        // We intentionally fill the slot — matching all other applets — rather
+        // than trying to break out to full panel thickness. Phase 2 expanded
+        // states will overflow downward via a separate surface.
         Layout.fillHeight: true
 
         readonly property int panelThickness: Plasmoid.formFactor === PlasmaCore.Types.Horizontal

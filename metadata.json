@@ -1,0 +1,19 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "org.kde.plasma.dynamicisland",
+        "Name": "Dynamic Island",
+        "Description": "A morphing capsule anchored beneath the top panel that surfaces notifications, media, OSDs, progress, and timers.",
+        "Version": "0.1.0",
+        "EnabledByDefault": true,
+        "License": "GPL-2.0-or-later",
+        "FormFactors": ["horizontal"],
+        "Authors": [
+            { "Name": "hacksynth" }
+        ],
+        "Category": "Utilities"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml"
+}

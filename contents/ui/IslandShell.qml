@@ -23,29 +23,5 @@ Item {
             radius: capsule.radius
             antialiasing: true
         }
-
-        Rectangle {
-            id: gloss
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            height: parent.height * Theme.glossHeightRatio
-            radius: capsule.radius
-            antialiasing: true
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: Theme.glossTop }
-                GradientStop { position: 1.0; color: "transparent" }
-            }
-        }
-
-        Rectangle {
-            id: stroke
-            anchors.fill: parent
-            color: "transparent"
-            radius: capsule.radius
-            antialiasing: true
-            border.color: Theme.strokeColor
-            border.width: Theme.strokeWidth
-        }
     }
 }

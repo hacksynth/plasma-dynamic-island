@@ -47,4 +47,8 @@ PlasmoidItem {
     OsdSource {
         id: osdSource
     }
+
+    MediaSource {
+        id: mediaSource
+    }
 }

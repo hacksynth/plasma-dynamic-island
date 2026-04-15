@@ -77,6 +77,10 @@ Item {
         anchors.fill: parent
         visible: root._mode === 1
 
+        // Icon color is determined by the active KDE icon theme
+        // (Breeze tints audio-volume-muted red as an alert hint).
+        // Do NOT force single-color tinting — respect the user's theme
+        // and the inherent semantic of the icon.
         Kirigami.Icon {
             anchors.centerIn: parent
             source: root._icon
@@ -87,32 +91,34 @@ Item {
     }
 
     // ---- Mode 2: text (icon + single-line text) ----
-    RowLayout {
-        anchors.fill: parent
+    // Use Row + anchors.centerIn (not RowLayout) so the icon+text pair
+    // visually centers in the capsule rather than stretching to fill.
+    // osdText payloads are typically very short (Mute / desktop name);
+    // forcing fillWidth would left-align them awkwardly.
+    Row {
+        anchors.centerIn: parent
         spacing: 8
         visible: root._mode === 2
 
         Kirigami.Icon {
             source: root._icon
-            Layout.preferredWidth: 18
-            Layout.preferredHeight: 18
-            Layout.alignment: Qt.AlignVCenter
+            width: 18
+            height: 18
+            anchors.verticalCenter: parent.verticalCenter
             fallback: "dialog-information"
             visible: root._icon !== ""
         }
 
         Text {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignVCenter
             text: root._text
             color: "#f5f5f5"
-            font.pixelSize: 12
+            font.pixelSize: 13
             font.weight: Font.DemiBold
             font.family: Kirigami.Theme.defaultFont.family
-            elide: Text.ElideRight
-            maximumLineCount: 1
-            lineHeight: 1.0
-            verticalAlignment: Text.AlignVCenter
+            anchors.verticalCenter: parent.verticalCenter
+            // Not fillWidth, not elide: short labels look best when allowed
+            // to size naturally. Re-add elide if a long-text osdText case
+            // surfaces in the wild.
         }
     }
 }

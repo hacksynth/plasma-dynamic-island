@@ -8,6 +8,18 @@ import org.kde.plasma.dynamicisland.dbussignal as DBusSignal
 // One signal stream covers volume / brightness / mic / kbd / touchpad /
 // wifi / virtual-desktop / power-profile etc — Plasma's native OSD
 // service broadcasts everything through these two signals.
+//
+// Coverage status (as of Phase 2 step 5b):
+//   ✓ Volume (osdProgress, audio-volume-* icons)
+//   ✓ Mute (osdText, "静音"/"Muted" string)
+//   ⏳ Brightness — requires keyboard backlight key (untested on user
+//     hardware, depends on /sys/class/backlight presence)
+//   ⏳ Virtual desktop switch — requires keyboard shortcut, untested
+//   ⏳ Other osdText events (touchpad, wifi, power profile) —
+//     code path exists, untested
+// All untested events are expected to work because they go through
+// the same osdProgress/osdText signals; the only risk is icon
+// resolution failure for less common icons.
 QtObject {
     id: source
 

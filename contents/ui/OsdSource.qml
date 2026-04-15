@@ -80,10 +80,12 @@ QtObject {
         })
     }
 
-    // osdText(text: s, iconName: s)
+    // osdText(iconName: s, text: s)
+    // Live introspection confirms KDE emits (iconName, text), e.g.
+    //   osdText("audio-volume-muted", "静音") for mute toggle.
     function _handleText(args) {
-        const text = args[0] || ""
-        const iconName = args[1] || ""
+        const iconName = args[0] || ""
+        const text = args[1] || ""
 
         const now = Date.now()
         if (_lastEvent

@@ -32,6 +32,9 @@ PlasmaCore.Dialog {
                 || _displayState === "notificationCritical") {
             return "content/NotificationContent.qml"
         }
+        if (_displayState === "osd") {
+            return "content/OsdContent.qml"
+        }
         return ""
     }
 

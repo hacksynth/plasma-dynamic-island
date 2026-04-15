@@ -11,7 +11,7 @@ QtObject {
         media:                { priority: 2, persistent: true,  width: 180, expandedHeight: 56 },
         progress:             { priority: 3, persistent: true,  width: 170, expandedHeight: 48 },
         notification:         { priority: 4, persistent: false, defaultTimeout: 5000, width: 200, expandedHeight: 56 },
-        osd:                  { priority: 5, persistent: false, defaultTimeout: 2000, width: 110, expandedHeight: 36 },
+        osd:                  { priority: 5, persistent: false, defaultTimeout: 2000, width: 130, expandedHeight: 40 },
         notificationCritical: { priority: 6, persistent: false, defaultTimeout: 8000, width: 220, expandedHeight: 64 }
     })
 

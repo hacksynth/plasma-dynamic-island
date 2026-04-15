@@ -43,6 +43,15 @@ QtObject {
         }
     }
 
+    // urgency from KDE NotificationManager is a flag, not a
+    // sequential enum: 1=Low, 2=Normal, 4=Critical. The fdo spec
+    // defines 0/1/2 but KDE remaps. Compare with === 4 for critical.
+
+    // body is wrapped by KDE in <?xml ?><html>...</html>. Step 5
+    // (UI rendering) must strip this wrapper. Using Text.RichText
+    // alone is not sufficient because the XML prologue still
+    // shows. Plan: regex strip the wrapper and keep inner text
+    // (or basic <b>/<i>/<a> tags only).
     function _consumeRow(row) {
         const idx = notifModel.index(row, 0)
         if (!idx.valid) return

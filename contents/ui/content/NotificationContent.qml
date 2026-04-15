@@ -35,52 +35,56 @@ Item {
 
     readonly property string _iconName: _appIcon !== ""
         ? _appIcon
-        : "preferences-desktop-notification"
+        : "dialog-information"
 
     RowLayout {
+        id: row
         anchors.fill: parent
-        anchors.leftMargin: 8
-        anchors.rightMargin: 8
-        spacing: 8
+        anchors.leftMargin: 0
+        anchors.rightMargin: 0
+        spacing: 10
 
         Kirigami.Icon {
             source: root._iconName
             Layout.preferredWidth: 24
             Layout.preferredHeight: 24
             Layout.alignment: Qt.AlignVCenter
-            fallback: "preferences-desktop-notification"
+            fallback: "dialog-information"
         }
 
         ColumnLayout {
+            id: textColumn
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            spacing: 0
+            spacing: 2
 
             Text {
+                id: summaryText
                 Layout.fillWidth: true
                 text: root._summary
                 color: "#f5f5f5"
-                font.pixelSize: 14
+                font.pixelSize: 13
                 font.weight: Font.DemiBold
                 elide: Text.ElideRight
                 maximumLineCount: 1
+                lineHeight: 1.0
                 verticalAlignment: Text.AlignVCenter
                 font.family: Kirigami.Theme.defaultFont.family
-                renderType: Text.NativeRendering
             }
 
             Text {
+                id: bodyText
                 Layout.fillWidth: true
                 text: root._body
                 color: "#a0a0a0"
-                font.pixelSize: 11
+                font.pixelSize: 10
                 font.weight: Font.Normal
                 elide: Text.ElideRight
                 maximumLineCount: 1
+                lineHeight: 1.0
                 visible: text !== ""
                 verticalAlignment: Text.AlignVCenter
                 font.family: Kirigami.Theme.defaultFont.family
-                renderType: Text.NativeRendering
             }
         }
     }

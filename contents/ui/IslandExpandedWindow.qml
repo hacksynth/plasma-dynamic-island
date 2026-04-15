@@ -38,6 +38,9 @@ PlasmaCore.Dialog {
         if (_displayState === "media") {
             return "content/MediaContent.qml"
         }
+        if (_displayState === "progress") {
+            return "content/ProgressContent.qml"
+        }
         return ""
     }
 

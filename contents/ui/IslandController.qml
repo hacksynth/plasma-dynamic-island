@@ -9,7 +9,7 @@ QtObject {
         idle:                 { priority: 0, persistent: true,  width: 140, expandedHeight: 0  },
         timer:                { priority: 1, persistent: true,  width: 160, expandedHeight: 48 },
         media:                { priority: 2, persistent: true,  width: 240, expandedHeight: 60 },
-        progress:             { priority: 3, persistent: true,  width: 170, expandedHeight: 48 },
+        progress:             { priority: 3, persistent: true,  width: 220, expandedHeight: 52 },
         notification:         { priority: 4, persistent: false, defaultTimeout: 5000, width: 200, expandedHeight: 56 },
         osd:                  { priority: 5, persistent: false, defaultTimeout: 2000, width: 130, expandedHeight: 40 },
         notificationCritical: { priority: 6, persistent: false, defaultTimeout: 8000, width: 220, expandedHeight: 64 }

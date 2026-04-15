@@ -6,16 +6,19 @@ QtObject {
     id: ctrl
 
     readonly property var stateDefs: ({
-        idle:         { priority: 0, persistent: true,  width: 140 },
-        timer:        { priority: 1, persistent: true,  width: 160 },
-        media:        { priority: 2, persistent: true,  width: 180 },
-        progress:     { priority: 3, persistent: true,  width: 170 },
-        notification: { priority: 4, persistent: false, defaultTimeout: 5000, width: 200 },
-        osd:          { priority: 5, persistent: false, defaultTimeout: 2000, width: 110 }
+        idle:         { priority: 0, persistent: true,  width: 140, expandedHeight: 0 },
+        timer:        { priority: 1, persistent: true,  width: 160, expandedHeight: 48 },
+        media:        { priority: 2, persistent: true,  width: 180, expandedHeight: 56 },
+        progress:     { priority: 3, persistent: true,  width: 170, expandedHeight: 48 },
+        notification: { priority: 4, persistent: false, defaultTimeout: 5000, width: 200, expandedHeight: 56 },
+        osd:          { priority: 5, persistent: false, defaultTimeout: 2000, width: 110, expandedHeight: 36 }
     })
 
     property string activeState: "idle"
     property var    activeData: ({})
+    readonly property bool expanded: activeState !== "idle"
+
+    property int _panelSlotHeight: Theme.fallbackHeight
 
     property var persistentSlots: ({ timer: null, media: null, progress: null })
 
@@ -126,6 +129,9 @@ QtObject {
         activeState = nextState
         activeData = nextData
         targetWidth = stateDefs[nextState].width
+        targetHeight = stateDefs[nextState].expandedHeight > 0
+            ? stateDefs[nextState].expandedHeight
+            : _panelSlotHeight
 
         _expiryTimer.stop()
         if (nextTimeout > 0) {

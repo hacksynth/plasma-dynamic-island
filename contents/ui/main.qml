@@ -30,7 +30,13 @@ PlasmoidItem {
             ? height
             : Theme.fallbackHeight
 
-        onPanelThicknessChanged: IslandController.targetHeight = panelThickness
-        Component.onCompleted: IslandController.targetHeight = panelThickness
+        onPanelThicknessChanged: IslandController._panelSlotHeight = panelThickness
+        Component.onCompleted: IslandController._panelSlotHeight = panelThickness
+    }
+
+    IslandExpandedWindow {
+        id: expandedWindow
+        visualParent: root.compactRepresentationItem
+        shellRef: root.compactRepresentationItem
     }
 }

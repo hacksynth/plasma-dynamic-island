@@ -10,8 +10,6 @@ PlasmoidItem {
 
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
 
-    TestHarness { id: harness }
-
     switchWidth: 9999
     switchHeight: 9999
 

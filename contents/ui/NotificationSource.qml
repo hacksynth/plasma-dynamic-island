@@ -23,6 +23,7 @@ QtObject {
         // (model is cheap; we only react to onRowsInserted, never iterate).
         limit: 50
 
+        showJobs: false   // jobs handled by ProgressSource, not us
         showExpired: false
         showDismissed: false
         groupMode: NM.Notifications.GroupDisabled

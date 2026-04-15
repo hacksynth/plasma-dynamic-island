@@ -51,4 +51,8 @@ PlasmoidItem {
     MediaSource {
         id: mediaSource
     }
+
+    ProgressSource {
+        id: progressSource
+    }
 }

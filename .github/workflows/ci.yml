@@ -25,8 +25,8 @@ jobs:
           version: '6.11.0'
           host: 'linux'
           target: 'desktop'
-          arch: 'gcc_64'
-          archives: 'qtbase qtdeclarative'
+          arch: 'linux_gcc_64'
+          modules: 'qtdeclarative'
           cache: true
 
       - name: Validate metadata.json

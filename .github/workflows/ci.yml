@@ -19,10 +19,10 @@ jobs:
             cmake \
             ninja-build
 
-      # aqt 3.3.0's module metadata for Qt 6.11 is incomplete as of
-      # 2026-04 — declarative not indexed. 6.10.0 is the newest version
-      # fully resolvable. CI only needs enough Qt to build the plugin
-      # (QDBus, Qml) and run qmllint; we do not use 6.11-only APIs.
+      # Qt 6 bundles QtDeclarative (QtQuick/QML) into the base install,
+      # so no `modules:` needed. aqt 3.3.0 is picky about 6.11 metadata
+      # ('qtdeclarative' even as a module fails to resolve), so pin CI
+      # to a fully-indexed 6.10.0 — we don't use any 6.11-only APIs.
       - name: Install Qt 6.10
         uses: jurplel/install-qt-action@v4
         with:
@@ -30,7 +30,6 @@ jobs:
           host: 'linux'
           target: 'desktop'
           arch: 'linux_gcc_64'
-          modules: 'qtdeclarative'
           cache: true
 
       - name: Validate metadata.json

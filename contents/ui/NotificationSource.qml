@@ -60,6 +60,11 @@ QtObject {
         const body    = notifModel.data(idx, NM.Notifications.BodyRole) || ""
         const appName = notifModel.data(idx, NM.Notifications.ApplicationNameRole) || ""
         const urgency = notifModel.data(idx, NM.Notifications.UrgencyRole)
+        // IconNameRole = sender-provided app_icon / hint. ApplicationIconNameRole
+        // = icon from the sending app's .desktop file. Try sender-provided first.
+        const appIcon = notifModel.data(idx, NM.Notifications.IconNameRole)
+            || notifModel.data(idx, NM.Notifications.ApplicationIconNameRole)
+            || ""
         // NM.Notifications.Urgency is a flag enum: LowUrgency=1, NormalUrgency=2,
         // CriticalUrgency=4 — NOT the freedesktop urgency byte (0/1/2).
 
@@ -74,6 +79,7 @@ QtObject {
 
         IslandController.request(stateName, {
             appName: appName,
+            appIcon: appIcon,
             summary: summary,
             body: body,
             urgency: urgency

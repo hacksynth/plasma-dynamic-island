@@ -39,4 +39,8 @@ PlasmoidItem {
         visualParent: root.compactRepresentationItem
         shellRef: root.compactRepresentationItem
     }
+
+    NotificationSource {
+        id: notificationSource
+    }
 }

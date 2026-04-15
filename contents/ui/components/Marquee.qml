@@ -6,6 +6,12 @@ import org.kde.kirigami as Kirigami
 // Horizontally scrolling text. If text fits within width, displays
 // normally (no animation). If overflows, scrolls left after a hold,
 // snaps back to start, holds again, repeats.
+//
+// Edges fade to `edgeColor` over `edgeFadePx` so characters slide in
+// and out softly rather than being hard-cut at the clipping box —
+// iOS marquee style. edgeColor defaults to the island background so
+// the fade merges into the capsule; override when embedding on any
+// other backdrop.
 Item {
     id: root
 
@@ -15,6 +21,12 @@ Item {
     property int weight: Font.Normal
     property int holdMs: 1800
     property int speedPxPerSec: 30
+
+    // Edge fade — caller sets edgeColor to the background the Marquee is
+    // painted over (typically the capsule bg). Marquee is in components/
+    // and avoids depending on the Theme singleton so it stays portable.
+    property color edgeColor: "#131316"
+    property int edgeFadePx: 12
 
     clip: true
 
@@ -41,6 +53,34 @@ Item {
         font.pixelSize: root.pixelSize
         font.weight: root.weight
         font.family: Kirigami.Theme.defaultFont.family
+    }
+
+    // Left fade — transparent on inner edge, opaque on outer
+    Rectangle {
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: root.edgeFadePx
+        visible: root._overflows
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop { position: 0.0; color: root.edgeColor }
+            GradientStop { position: 1.0; color: "transparent" }
+        }
+    }
+
+    // Right fade — opaque on outer, transparent on inner
+    Rectangle {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: root.edgeFadePx
+        visible: root._overflows
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop { position: 0.0; color: "transparent" }
+            GradientStop { position: 1.0; color: root.edgeColor }
+        }
     }
 
     Timer {

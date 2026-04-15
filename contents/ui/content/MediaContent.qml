@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Effects
 import org.kde.kirigami as Kirigami
+import ".." as UI
 import "../components" as Components
 
 Item {
@@ -75,6 +76,7 @@ Item {
                 color: "#f5f5f5"
                 pixelSize: 13
                 weight: Font.DemiBold
+                edgeColor: UI.Theme.islandBg
             }
 
             Text {

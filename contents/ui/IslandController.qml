@@ -6,12 +6,12 @@ QtObject {
     id: ctrl
 
     readonly property var stateDefs: ({
-        idle:         { priority: 0, persistent: true  },
-        timer:        { priority: 1, persistent: true  },
-        media:        { priority: 2, persistent: true  },
-        progress:     { priority: 3, persistent: true  },
-        notification: { priority: 4, persistent: false, defaultTimeout: 5000 },
-        osd:          { priority: 5, persistent: false, defaultTimeout: 2000 }
+        idle:         { priority: 0, persistent: true,  width: 140 },
+        timer:        { priority: 1, persistent: true,  width: 160 },
+        media:        { priority: 2, persistent: true,  width: 180 },
+        progress:     { priority: 3, persistent: true,  width: 170 },
+        notification: { priority: 4, persistent: false, defaultTimeout: 5000, width: 200 },
+        osd:          { priority: 5, persistent: false, defaultTimeout: 2000, width: 110 }
     })
 
     property string activeState: "idle"
@@ -125,6 +125,7 @@ QtObject {
         }
         activeState = nextState
         activeData = nextData
+        targetWidth = stateDefs[nextState].width
 
         _expiryTimer.stop()
         if (nextTimeout > 0) {

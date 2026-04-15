@@ -6,7 +6,16 @@ progress jobs, and timers with spring-based shape transitions.
 
 ## Non-negotiables
 
-- **Pure QML + JavaScript.** No C++ plugin unless a hard blocker is proven.
+- **Pure QML + JavaScript**, with one explicitly scoped C++ exception:
+  a minimal `DBusSignalListener` plugin under `plugin/` that exposes
+  arbitrary D-Bus signal subscription to QML. This exception exists
+  because Plasma 6 + Qt 6 has no QML-native API for subscribing to
+  arbitrary D-Bus signals, and the workarounds (shell-out to gdbus
+  monitor, or per-source plasma-private QML types) are either too
+  hacky or scale linearly with each new D-Bus source. The plugin's
+  scope is strictly limited to signal forwarding — it must contain
+  zero business logic. Any new C++ requires a separate hard-blocker
+  review.
 - **Qt 6.11, KF6, Plasma 6 only.** Never use Plasma 5 / Qt 5 idioms.
   Imports use the Plasma 6 style:
   `import org.kde.plasma.core as PlasmaCore`

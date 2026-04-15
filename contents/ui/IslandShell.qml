@@ -13,6 +13,8 @@ Item {
         anchors.centerIn: parent
         clip: true
 
+        // Spring params live in Theme.qml. Do NOT override per-state — the
+        // whole island must feel consistent across all transitions.
         Behavior on width {
             SpringAnimation {
                 spring: Theme.springSpring

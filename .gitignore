@@ -1,0 +1,18 @@
+# Build outputs
+plugin/build/
+plugin/build-*/
+cmake-build-*/
+.ci-prefix/
+
+# Generated project files
+compile_commands.json
+CMakeUserPresets.json
+
+# Editor and OS clutter
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.user

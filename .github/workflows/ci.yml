@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-plugin:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            ninja-build \
+            qt6-base-dev \
+            qt6-declarative-dev
+
+      - name: Validate metadata.json
+        run: python3 -m json.tool metadata.json > /dev/null
+
+      - name: Validate install script syntax
+        run: bash -n install.sh
+
+      - name: Configure plugin
+        run: |
+          cmake -S plugin -B plugin/build -GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="${PWD}/.ci-prefix"
+
+      - name: Build plugin
+        run: cmake --build plugin/build --parallel
+
+      - name: Install plugin module
+        run: cmake --install plugin/build
+
+      - name: Verify installed artifacts
+        run: |
+          test -f .ci-prefix/lib/qt6/qml/org/kde/plasma/dynamicisland/dbussignal/qmldir
+          find .ci-prefix/lib/qt6/qml/org/kde/plasma/dynamicisland/dbussignal -maxdepth 1 -type f

@@ -35,6 +35,9 @@ PlasmaCore.Dialog {
         if (_displayState === "osd") {
             return "content/OsdContent.qml"
         }
+        if (_displayState === "media") {
+            return "content/MediaContent.qml"
+        }
         return ""
     }
 

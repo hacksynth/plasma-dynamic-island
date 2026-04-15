@@ -1,0 +1,64 @@
+name: Bug report
+description: Report a reproducible problem with the plasmoid, QML, or bundled plugin.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem.
+
+        For security issues, do not post exploit details here. Follow `SECURITY.md` instead.
+  - type: input
+    id: version
+    attributes:
+      label: Project version
+      description: Version from `metadata.json` or the installed plasmoid package.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: plasma-version
+    attributes:
+      label: Plasma version
+      description: Example: 6.1.5
+      placeholder: 6.x
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Distribution / platform
+      description: Distribution name and version, plus Wayland or X11 if relevant.
+      placeholder: KDE neon 6.0, Wayland
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest reliable reproduction you can.
+      placeholder: |
+        1. Install the plasmoid with ./install.sh
+        2. Restart plasmashell
+        3. Trigger a notification
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, screenshots, or clips
+      description: Paste relevant terminal output, journal logs, or attach visuals if helpful.

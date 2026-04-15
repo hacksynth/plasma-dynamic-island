@@ -43,4 +43,8 @@ PlasmoidItem {
     NotificationSource {
         id: notificationSource
     }
+
+    OsdSource {
+        id: osdSource
+    }
 }

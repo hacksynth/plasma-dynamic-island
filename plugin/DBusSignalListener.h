@@ -4,11 +4,29 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QStringList>
+#include <QVariant>
 #include <QVariantList>
 
+// Handle returned by DBusSignalListener.call(). Emits finished() once the
+// underlying QDBusPendingCall completes. QML holds the JS ownership so the
+// object lives until the JS reference is released.
+class DBusPendingReply : public QObject
+{
+    Q_OBJECT
+    QML_ELEMENT
+    QML_UNCREATABLE("DBusPendingReply is returned by DBusSignalListener.call()")
+
+public:
+    explicit DBusPendingReply(QObject *parent = nullptr);
+
+Q_SIGNALS:
+    void finished(bool success, const QVariant &result, const QString &error);
+};
+
 // Minimal QML wrapper for arbitrary org.freedesktop.DBus session-bus signal
-// subscription. ZERO business logic — only translates DBus signals into a
-// uniform QML signal. See CLAUDE.md "Pure QML + JavaScript" exception.
+// subscription, plus outbound async method calls via call(). ZERO business
+// logic — only translates DBus signals into a uniform QML signal and
+// forwards method calls. See CLAUDE.md "Pure QML + JavaScript" exception.
 class DBusSignalListener : public QObject
 {
     Q_OBJECT
@@ -36,6 +54,19 @@ public:
     void setPath(const QString &v);
     void setIface(const QString &v);
     void setSignalNames(const QStringList &v);
+
+    // Async outbound D-Bus method call. args is the parameter list in
+    // method-signature order. signature is an optional D-Bus signature
+    // string (e.g. "susssasa{sv}i") used to coerce JS values to the
+    // expected wire types — needed because QML has no uint32, an empty
+    // JS array marshals as `av` not `as`, etc. Pass "" to disable coercion.
+    // The returned DBusPendingReply emits finished(success, result, error).
+    Q_INVOKABLE DBusPendingReply *call(const QString &service,
+                                       const QString &path,
+                                       const QString &iface,
+                                       const QString &method,
+                                       const QVariantList &args,
+                                       const QString &signature = QString());
 
 Q_SIGNALS:
     void signalReceived(const QString &signalName, const QVariantList &args);

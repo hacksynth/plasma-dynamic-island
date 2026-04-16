@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import ".." as UI
 
 Item {
     id: root
@@ -62,8 +63,8 @@ Item {
                 id: summaryText
                 Layout.fillWidth: true
                 text: root._summary
-                color: "#f5f5f5"
-                font.pixelSize: 13
+                color: UI.Theme.textPrimary
+                font.pixelSize: UI.Theme.summaryPixelSize
                 font.weight: Font.DemiBold
                 elide: Text.ElideRight
                 maximumLineCount: 1
@@ -76,8 +77,8 @@ Item {
                 id: bodyText
                 Layout.fillWidth: true
                 text: root._body
-                color: "#a0a0a0"
-                font.pixelSize: 10
+                color: UI.Theme.textSecondary
+                font.pixelSize: UI.Theme.bodyPixelSize
                 font.weight: Font.Normal
                 elide: Text.ElideRight
                 maximumLineCount: 1

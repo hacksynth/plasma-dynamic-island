@@ -73,8 +73,8 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 16
                 text: root._track
-                color: "#f5f5f5"
-                pixelSize: 13
+                color: UI.Theme.textPrimary
+                pixelSize: UI.Theme.summaryPixelSize
                 weight: Font.DemiBold
                 edgeColor: UI.Theme.islandBg
             }
@@ -82,8 +82,8 @@ Item {
             Text {
                 Layout.fillWidth: true
                 text: root._artist
-                color: "#a0a0a0"
-                font.pixelSize: 10
+                color: UI.Theme.textSecondary
+                font.pixelSize: UI.Theme.bodyPixelSize
                 font.weight: Font.Normal
                 font.family: Kirigami.Theme.defaultFont.family
                 elide: Text.ElideRight
@@ -111,7 +111,7 @@ Item {
                     onPaint: {
                         const ctx = getContext("2d")
                         ctx.reset()
-                        ctx.fillStyle = "#f5f5f5"
+                        ctx.fillStyle = UI.Theme.textPrimary
                         ctx.beginPath()
                         ctx.moveTo(2, 1)
                         ctx.lineTo(2, 9)
@@ -138,13 +138,13 @@ Item {
                     x: 1; y: 1
                     width: 3; height: 8
                     radius: 1
-                    color: "#a0a0a0"
+                    color: UI.Theme.textSecondary
                 }
                 Rectangle {
                     x: 6; y: 1
                     width: 3; height: 8
                     radius: 1
-                    color: "#a0a0a0"
+                    color: UI.Theme.textSecondary
                 }
             }
         }

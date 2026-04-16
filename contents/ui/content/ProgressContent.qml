@@ -44,8 +44,8 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 14
                 text: root._summary
-                color: "#f5f5f5"
-                pixelSize: 12
+                color: UI.Theme.textPrimary
+                pixelSize: UI.Theme.progressSummaryPixelSize
                 weight: Font.DemiBold
                 edgeColor: UI.Theme.islandBg
             }
@@ -53,15 +53,15 @@ Item {
             // Progress bar track
             Item {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 4
+                Layout.preferredHeight: UI.Theme.progressBarHeight
 
                 Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    height: 4
+                    height: UI.Theme.progressBarHeight
                     radius: 2
-                    color: "#30ffffff"
+                    color: UI.Theme.trackWhite
 
                     Rectangle {
                         anchors.left: parent.left
@@ -69,7 +69,7 @@ Item {
                         anchors.bottom: parent.bottom
                         width: parent.width * root._percentage / 100
                         radius: 2
-                        color: "#f5f5f5"
+                        color: UI.Theme.fillWhite
                         visible: width > 0
 
                         Behavior on width {
@@ -88,8 +88,8 @@ Item {
             Layout.alignment: Qt.AlignVCenter
             Layout.preferredWidth: 28
             text: root._percentage + "%"
-            color: "#a0a0a0"
-            font.pixelSize: 11
+            color: UI.Theme.textSecondary
+            font.pixelSize: UI.Theme.pctLabelPixelSize
             font.weight: Font.Normal
             font.family: Kirigami.Theme.defaultFont.family
             horizontalAlignment: Text.AlignRight

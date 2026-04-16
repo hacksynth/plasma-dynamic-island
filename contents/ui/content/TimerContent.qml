@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import ".." as UI
 
 Item {
     id: root
@@ -41,8 +42,8 @@ Item {
             Text {
                 id: countdownText
                 text: root._fmt(root._remaining)
-                color: "#f5f5f5"
-                font.pixelSize: 14
+                color: UI.Theme.textPrimary
+                font.pixelSize: UI.Theme.countdownPixelSize
                 font.weight: Font.DemiBold
                 font.family: Kirigami.Theme.defaultFont.family
                 Layout.alignment: Qt.AlignVCenter
@@ -51,8 +52,8 @@ Item {
             Text {
                 id: labelText
                 text: root._label
-                color: "#a0a0a0"
-                font.pixelSize: 11
+                color: UI.Theme.textSecondary
+                font.pixelSize: UI.Theme.pctLabelPixelSize
                 font.weight: Font.Normal
                 font.family: Kirigami.Theme.defaultFont.family
                 elide: Text.ElideRight
@@ -67,16 +68,16 @@ Item {
         // Shorter = less time left. 400ms ease-out smooths the 1Hz ticks.
         Item {
             Layout.fillWidth: true
-            Layout.preferredHeight: 4
+            Layout.preferredHeight: UI.Theme.progressBarHeight
             Layout.alignment: Qt.AlignBottom
 
             Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                height: 4
+                height: UI.Theme.progressBarHeight
                 radius: 2
-                color: "#30ffffff"
+                color: UI.Theme.trackWhite
 
                 Rectangle {
                     anchors.left: parent.left
@@ -84,7 +85,7 @@ Item {
                     anchors.bottom: parent.bottom
                     width: parent.width * root._remaining / root._total
                     radius: 2
-                    color: "#f5f5f5"
+                    color: UI.Theme.fillWhite
                     visible: width > 0
 
                     Behavior on width {

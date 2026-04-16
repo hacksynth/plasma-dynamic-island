@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import ".." as UI
 
 Item {
     id: root
@@ -42,15 +43,15 @@ Item {
         Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            Layout.preferredHeight: 4
+            Layout.preferredHeight: UI.Theme.progressBarHeight
 
             Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                height: 4
+                height: UI.Theme.progressBarHeight
                 radius: 2
-                color: "#30ffffff"
+                color: UI.Theme.trackWhite
 
                 Rectangle {
                     anchors.left: parent.left
@@ -58,7 +59,7 @@ Item {
                     anchors.bottom: parent.bottom
                     width: parent.width * Math.max(0, Math.min(100, root._value)) / 100
                     radius: 2
-                    color: "#f5f5f5"
+                    color: UI.Theme.fillWhite
                     visible: width > 0
 
                     Behavior on width {
@@ -111,8 +112,8 @@ Item {
 
         Text {
             text: root._text
-            color: "#f5f5f5"
-            font.pixelSize: 13
+            color: UI.Theme.textPrimary
+            font.pixelSize: UI.Theme.osdTextPixelSize
             font.weight: Font.DemiBold
             font.family: Kirigami.Theme.defaultFont.family
             anchors.verticalCenter: parent.verticalCenter

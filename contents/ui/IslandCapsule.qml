@@ -28,8 +28,8 @@ Item {
     Loader {
         id: contentLoader
         anchors.fill: parent
-        anchors.leftMargin: parent.height * 0.25
-        anchors.rightMargin: parent.height * 0.25
+        anchors.leftMargin: parent.height * Theme.contentBreathingRatio
+        anchors.rightMargin: parent.height * Theme.contentBreathingRatio
         opacity: 0
 
         property var contentData: ({})

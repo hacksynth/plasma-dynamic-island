@@ -1,0 +1,123 @@
+name: Release
+
+# Tag-driven releases. Push a tag like v0.1.0 (stable) or
+# v0.1.0-canary.1 / v0.1.0-rc.1 / v0.1.0-beta.1 (pre-release) and
+# this workflow will build the plugin for verification, package the
+# plasmoid source as a tarball, and publish a GitHub Release.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name (e.g. v0.1.0-canary.1). Must already exist in the repo.'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - name: Resolve tag
+        id: tag
+        run: |
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "name=${tag}" >> "$GITHUB_OUTPUT"
+          # Strip leading v for package version string.
+          version="${tag#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          # Pre-release detection: any hyphenated suffix marks it as non-stable.
+          if [[ "$tag" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build
+
+      # Match ci.yml: Qt 6.10.0 works around aqt 3.3.0's incomplete
+      # metadata for 6.11. qtdeclarative is bundled in qtbase since Qt 6.
+      - name: Install Qt 6.10
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.10.0'
+          host: 'linux'
+          target: 'desktop'
+          arch: 'linux_gcc_64'
+          cache: true
+
+      - name: Verify metadata version matches tag
+        run: |
+          meta_version="$(python3 -c "import json; print(json.load(open('metadata.json'))['KPlugin']['Version'])")"
+          tag_version="${{ steps.tag.outputs.version }}"
+          # For pre-release tags (0.1.0-canary.1) the metadata should match the base (0.1.0).
+          base_version="${tag_version%%-*}"
+          if [ "$meta_version" != "$base_version" ]; then
+            echo "::error::metadata.json version ($meta_version) does not match tag base ($base_version)"
+            exit 1
+          fi
+
+      - name: Build plugin (verification only)
+        run: |
+          cmake -S plugin -B plugin/build -GNinja \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build plugin/build --parallel
+
+      - name: Package source tarball
+        id: package
+        run: |
+          tag="${{ steps.tag.outputs.name }}"
+          pkg="plasma-dynamic-island-${tag}"
+          # git archive honors .gitattributes export-ignore; use it so the
+          # tarball only ships what's tracked in the repo at that tag.
+          git archive --format=tar.gz --prefix="${pkg}/" -o "${pkg}.tar.gz" "${tag}"
+          sha256sum "${pkg}.tar.gz" > "${pkg}.tar.gz.sha256"
+          echo "tarball=${pkg}.tar.gz" >> "$GITHUB_OUTPUT"
+          echo "checksum=${pkg}.tar.gz.sha256" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: ${{ steps.tag.outputs.name }}
+          prerelease: ${{ steps.tag.outputs.prerelease }}
+          generate_release_notes: true
+          files: |
+            ${{ steps.package.outputs.tarball }}
+            ${{ steps.package.outputs.checksum }}
+          body: |
+            Canary / pre-release build of plasma-dynamic-island.
+
+            ## Install from source tarball
+
+            ```sh
+            tar xf ${{ steps.package.outputs.tarball }}
+            cd plasma-dynamic-island-${{ steps.tag.outputs.name }}
+            ./install.sh
+            ```
+
+            The `install.sh` script builds the `DBusSignalListener` QML
+            plugin locally (needs Qt 6 + CMake + Ninja), installs it to
+            `~/.local/lib/qt6/qml`, and registers the plasmoid via
+            `kpackagetool6`. Log out and back in after first install so
+            plasmashell picks up `QML2_IMPORT_PATH`.
+
+            ## Caveats
+
+            Pre-release builds may contain unfinished states, debug
+            logging, and breaking changes between canaries. Pin to a
+            stable tag for anything other than testing.

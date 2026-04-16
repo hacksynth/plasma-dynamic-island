@@ -69,6 +69,38 @@ Useful manual checks:
 - verify media metadata appears when a player is active
 - verify OSD updates react to brightness / volume changes
 
+## Development workflow
+
+### Iteration loop
+
+Use `plasmoidviewer` as the primary dev surface — it's an isolated
+process that doesn't risk corrupting your real Plasma session.
+
+```bash
+./dev.sh           # upgrade plasmoid, reload plasmoidviewer
+./dev.sh plugin    # also rebuild the C++ DBus plugin
+```
+
+Watch project logs:
+
+```bash
+tail -f /tmp/plasmoidviewer.log | grep -E '\[ctrl\]|\[notif\]|\[osd\]|\[media\]|\[progress\]|\[handoff\]'
+```
+
+Verify in the real panel only before committing — most iteration
+can stay in plasmoidviewer.
+
+### Avoid this
+
+DO NOT use `kquitapp6 plasmashell && kstart plasmashell` repeatedly.
+On Wayland this can leave plasmashell unable to acquire outputs,
+breaking notifications, KUiServer, and the panel itself. If this
+happens, the only reliable fix is to log out and log back in.
+
+Use `plasmoidviewer` for iteration; only restart plasmashell when
+a change to the C++ plugin or QML module structure requires it
+(and even then, prefer logout/login).
+
 ## Repository layout
 
 - `contents/ui/`: plasmoid QML sources

@@ -9,7 +9,6 @@ QtObject {
     // idle shape is a fixed strip, not a proportional pill.
     readonly property int idleWidth: 140
     readonly property int fallbackHeight: 28
-    readonly property int panelGap: 4
 
     readonly property real springSpring: 3.0
     readonly property real springDamping: 0.28

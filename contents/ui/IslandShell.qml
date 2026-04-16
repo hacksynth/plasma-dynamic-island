@@ -1,5 +1,8 @@
 import QtQuick
 
+// IslandShell stays static at panel-slot size. All morphing happens
+// in IslandExpandedWindow's own capsule (cross-surface handoff;
+// IslandShell is opacity=0 during expand). No SpringAnimation here.
 Item {
     id: shell
 
@@ -11,22 +14,5 @@ Item {
         width: IslandController.targetWidth
         height: IslandController.targetHeight
         anchors.centerIn: parent
-
-        // Spring params live in Theme.qml. Do NOT override per-state — the
-        // whole island must feel consistent across all transitions.
-        Behavior on width {
-            SpringAnimation {
-                spring: Theme.springSpring
-                damping: Theme.springDamping
-                epsilon: Theme.springEpsilon
-            }
-        }
-        Behavior on height {
-            SpringAnimation {
-                spring: Theme.springSpring
-                damping: Theme.springDamping
-                epsilon: Theme.springEpsilon
-            }
-        }
     }
 }

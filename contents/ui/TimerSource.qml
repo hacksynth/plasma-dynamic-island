@@ -13,6 +13,13 @@ pragma ComponentBehavior: Bound
 // call() (DBusSignalListener now doubles as an outbound caller). The
 // notification is Critical urgency, so it also round-trips through our
 // own NotificationSource and re-lights the island as notificationCritical.
+//
+// File watch: we poll timer.json via XHR rather than using a
+// FileSystemWatcher because Qt 6 QML does not expose QFileSystemWatcher
+// as a QML type (verified on Qt 6.11). Poll interval is variable —
+// 500ms when a timer is active, 1000ms when idle — so steady-state
+// XHR load halves when nothing is scheduled. If a QML FileSystemWatcher
+// lands in a later Qt, swap it in.
 
 import QtQuick
 import QtCore
@@ -57,10 +64,10 @@ QtObject {
     // use .call() to fire expiry notifications.
     property DBusSignal.DBusSignalListener _bus: DBusSignal.DBusSignalListener {}
 
-    // ---- File watcher (polling, 500ms) ----
+    // ---- File watcher (variable-rate polling) ----
     property Timer _filePoll: Timer {
         id: filePoll
-        interval: 500
+        interval: source._timerActive ? 500 : 1000
         repeat: true
         running: false
         onTriggered: source._checkControlFile()

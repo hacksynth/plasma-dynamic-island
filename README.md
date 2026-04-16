@@ -33,6 +33,24 @@ Restart `plasmashell` after the first install or after plugin changes:
 kquitapp6 plasmashell && kstart plasmashell
 ```
 
+## Environment
+
+`TimerSource` reads the control file via `XMLHttpRequest` against a
+`file://` URL. On recent Qt versions this requires an explicit opt-in:
+
+```bash
+export QML_XHR_ALLOW_FILE_READ=1
+```
+
+`install.sh` drops this into
+`~/.config/plasma-workspace/env/dynamic-island-qml-path.sh` and also
+calls `systemctl --user set-environment QML_XHR_ALLOW_FILE_READ=1` so
+the current session picks it up without a logout. If you install by
+hand (skipping `install.sh`) make sure this variable is exported
+before plasmashell starts — without it, `island-timer start …`
+writes the control file correctly but `TimerSource` silently reads
+empty and no timer ever runs.
+
 ## Uninstall
 
 ```bash

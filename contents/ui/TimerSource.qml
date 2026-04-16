@@ -9,13 +9,14 @@ pragma ComponentBehavior: Bound
 // All timestamps are UNIX SECONDS, never milliseconds — Plasmoid
 // Int configuration entries are 32-bit and ms (13 digits) overflows.
 //
-// Expiry notification (freedesktop Notify method call) is deferred
-// to 5e-ui polish. Pure QML can't make outbound D-Bus method calls
-// without extending DBusSignalListener. On expiry we clear state,
-// log a TODO warning, and dismiss the island.
+// Expiry fires a freedesktop Notifications.Notify via the plugin's
+// call() (DBusSignalListener now doubles as an outbound caller). The
+// notification is Critical urgency, so it also round-trips through our
+// own NotificationSource and re-lights the island as notificationCritical.
 
 import QtQuick
 import QtCore
+import org.kde.plasma.dynamicisland.dbussignal as DBusSignal
 
 QtObject {
     id: source
@@ -51,6 +52,10 @@ QtObject {
     property int _lastHash: 0
 
     readonly property bool _timerActive: timerStartedAt > 0 && timerDurationSec > 0
+
+    // Outbound D-Bus caller. No signal subscription here — we only
+    // use .call() to fire expiry notifications.
+    property DBusSignal.DBusSignalListener _bus: DBusSignal.DBusSignalListener {}
 
     // ---- File watcher (polling, 500ms) ----
     property Timer _filePoll: Timer {
@@ -197,9 +202,9 @@ QtObject {
     }
 
     function _expireTimer() {
-        const label = timerLabel || "Timer"
-        console.log("[timer] expired, firing notification for:", label)
-        _fireExpiryNotification(label)
+        console.log("[timer] expired, firing notification for:",
+            timerLabel || "(unlabeled)")
+        _fireExpiryNotification(timerLabel)
         _clearState()
         IslandController.dismiss("timer")
     }
@@ -212,13 +217,29 @@ QtObject {
     }
 
     function _fireExpiryNotification(label) {
-        // Pure QML can't make outbound D-Bus method calls to invoke
-        // org.freedesktop.Notifications.Notify. DBusSignalListener is
-        // currently subscribe-only. Revisit in 5e-ui polish — likely by
-        // adding a minimal callMethod Q_INVOKABLE to the plugin.
-        console.warn("[timer] EXPIRY NOTIFICATION TODO: timer '"
-            + label + "' expired, but outbound D-Bus Notify is not yet "
-            + "wired from QML. Deferred to Phase 2 step 5e-ui polish.")
+        const body = label ? "'" + label + "' finished" : "Time's up"
+        const args = [
+            "Dynamic Island",       // s  app_name
+            0,                      // u  replaces_id
+            "alarm-symbolic",       // s  app_icon
+            "Timer",                // s  summary
+            body,                   // s  body
+            [],                     // as actions
+            { "urgency": 2 },       // a{sv} hints (2 = Critical)
+            5000                    // i  expire_timeout
+        ]
+        const reply = _bus.call(
+            "org.freedesktop.Notifications",
+            "/org/freedesktop/Notifications",
+            "org.freedesktop.Notifications",
+            "Notify",
+            args,
+            "susssasa{sv}i"
+        )
+        reply.finished.connect(function(ok, result, err) {
+            if (ok) console.log("[timer] expiry notification fired, id=" + result)
+            else    console.warn("[timer] expiry notification failed:", err)
+        })
     }
 
     Component.onCompleted: {

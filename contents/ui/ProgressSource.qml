@@ -1,5 +1,15 @@
 pragma ComponentBehavior: Bound
 
+// Job icons come from the originating app's desktop entry (resolved
+// by NotificationManager). If ApplicationIconNameRole is empty, the
+// app did not set one — the UI falls back to "system-run" icon.
+//
+// Pause/suspend visualization (icon opacity=0.55 when !running) is
+// in place in ProgressContent.qml but requires a real V2-compliant
+// KIO job to trigger JobStateRole transitions. V3.update({suspended})
+// does NOT flip JobStateRole; one needs org.kde.JobViewV2.setSuspended
+// on the job path. Deferred until users report needing it.
+
 import QtQuick
 import org.kde.notificationmanager as NM
 

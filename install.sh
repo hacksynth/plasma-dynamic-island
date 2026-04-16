@@ -22,8 +22,10 @@ mkdir -p "$ENV_DIR"
 cat >"$ENV_DIR/dynamic-island-qml-path.sh" <<EOF
 #!/bin/sh
 # Added by plasma-dynamic-island install.sh — make plasmashell load the
-# DBusSignalListener QML plugin from the user-local prefix.
+# DBusSignalListener QML plugin from the user-local prefix and allow
+# TimerSource to read its control file via XMLHttpRequest file://.
 export QML2_IMPORT_PATH="$PLUGIN_QML_DIR\${QML2_IMPORT_PATH:+:\$QML2_IMPORT_PATH}"
+export QML_XHR_ALLOW_FILE_READ=1
 EOF
 chmod +x "$ENV_DIR/dynamic-island-qml-path.sh"
 
@@ -35,6 +37,7 @@ if command -v systemctl >/dev/null; then
         systemctl --user set-environment "QML2_IMPORT_PATH=$NEW_PATH"
         echo "    systemd --user QML2_IMPORT_PATH = $NEW_PATH"
     fi
+    systemctl --user set-environment "QML_XHR_ALLOW_FILE_READ=1"
 fi
 
 echo "==> Installing plasmoid..."

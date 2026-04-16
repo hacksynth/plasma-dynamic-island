@@ -55,4 +55,9 @@ PlasmoidItem {
     ProgressSource {
         id: progressSource
     }
+
+    TimerSource {
+        id: timerSource
+        configuration: Plasmoid.configuration
+    }
 }

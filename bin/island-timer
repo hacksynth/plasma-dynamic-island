@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+# island-timer — trigger timers on the plasma-dynamic-island plasmoid
+#
+# Usage:
+#   island-timer start <seconds|duration> [label]
+#   island-timer cancel
+#   island-timer extend <seconds>
+#
+# Examples:
+#   island-timer start 1500 "Pomodoro"    # 25 minutes
+#   island-timer start 25m "Pomodoro"     # same, using 'm' suffix
+#   island-timer start 1h30m "Deep work"  # hours + minutes
+#   island-timer cancel
+#   island-timer extend 300               # add 5 minutes to current
+
+set -euo pipefail
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/plasma-dynamic-island"
+CONTROL_FILE="$STATE_DIR/timer.json"
+
+mkdir -p "$STATE_DIR"
+
+parse_duration() {
+    local s="$1"
+    if [[ "$s" =~ ^[0-9]+$ ]]; then
+        echo "$s"
+        return 0
+    fi
+    local total=0
+    local remaining="$s"
+    while [[ -n "$remaining" ]]; do
+        if [[ "$remaining" =~ ^([0-9]+)h(.*)$ ]]; then
+            total=$((total + ${BASH_REMATCH[1]} * 3600))
+            remaining="${BASH_REMATCH[2]}"
+        elif [[ "$remaining" =~ ^([0-9]+)m(.*)$ ]]; then
+            total=$((total + ${BASH_REMATCH[1]} * 60))
+            remaining="${BASH_REMATCH[2]}"
+        elif [[ "$remaining" =~ ^([0-9]+)s(.*)$ ]]; then
+            total=$((total + ${BASH_REMATCH[1]}))
+            remaining="${BASH_REMATCH[2]}"
+        else
+            echo "island-timer: invalid duration '$s'" >&2
+            echo "  valid examples: 1500, 25m, 1h30m, 45s, 2h" >&2
+            exit 2
+        fi
+    done
+    echo "$total"
+}
+
+json_escape() {
+    if command -v python3 >/dev/null 2>&1; then
+        python3 -c 'import sys, json; print(json.dumps(sys.argv[1]))' "$1"
+    else
+        local s="$1"
+        s="${s//\\/\\\\}"
+        s="${s//\"/\\\"}"
+        printf '"%s"' "$s"
+    fi
+}
+
+NONCE="$(date +%s%N)"
+
+cmd="${1:-}"
+case "$cmd" in
+    start)
+        duration_raw="${2:?missing duration}"
+        label="${3:-}"
+        seconds=$(parse_duration "$duration_raw")
+        label_json=$(json_escape "$label")
+        printf '{"op":"start","duration":%d,"label":%s,"nonce":%s}\n' \
+            "$seconds" "$label_json" "$NONCE" > "$CONTROL_FILE"
+        echo "island-timer: started ${seconds}s${label:+ ($label)}"
+        ;;
+    cancel)
+        printf '{"op":"cancel","nonce":%s}\n' "$NONCE" > "$CONTROL_FILE"
+        echo "island-timer: cancelled"
+        ;;
+    extend)
+        seconds="${2:?missing seconds}"
+        printf '{"op":"extend","seconds":%d,"nonce":%s}\n' \
+            "$seconds" "$NONCE" > "$CONTROL_FILE"
+        echo "island-timer: extended by ${seconds}s"
+        ;;
+    ""|-h|--help|help)
+        sed -n '2,/^$/p' "$0" | sed 's/^# \{0,1\}//'
+        exit 0
+        ;;
+    *)
+        echo "island-timer: unknown command '$cmd'" >&2
+        echo "try: island-timer --help" >&2
+        exit 2
+        ;;
+esac

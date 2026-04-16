@@ -48,10 +48,15 @@ else
     kpackagetool6 -t Plasma/Applet --install .
 fi
 
+echo "==> Linking island-timer to ~/.local/bin..."
+mkdir -p "$HOME/.local/bin"
+ln -sf "$(pwd)/bin/island-timer" "$HOME/.local/bin/island-timer"
+
 echo
 echo "==> Done."
 echo "    Plugin: $PLUGIN_QML_DIR/org/kde/plasma/dynamicisland/dbussignal/"
 echo "    Plasmoid: \$HOME/.local/share/plasma/plasmoids/org.kde.plasma.dynamicisland/"
+echo "    CLI:      \$HOME/.local/bin/island-timer (ensure ~/.local/bin is on PATH)"
 echo
 echo "    Restart plasmashell to pick up plugin changes:"
 echo "        kquitapp6 plasmashell && kstart plasmashell"

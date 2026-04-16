@@ -101,6 +101,12 @@ QtObject {
     }
 
     function _checkControlFile() {
+        // Content-hash dedupe: identical writes (same bytes) are ignored.
+        // The island-timer CLI embeds a nonce field so repeated invocations
+        // with the same user-visible params (e.g. two 25m pomodoros in a
+        // row) always produce different bytes and trigger dispatch.
+        // Hand-written echo calls without a nonce may dedupe — intentional,
+        // protects against shell copy-paste accidents.
         const txt = _readControlFile()
         if (!txt || txt.trim() === "") return
 

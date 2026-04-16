@@ -101,6 +101,77 @@ Use `plasmoidviewer` for iteration; only restart plasmashell when
 a change to the C++ plugin or QML module structure requires it
 (and even then, prefer logout/login).
 
+## Timer
+
+The island supports persistent countdown timers. Timers are triggered
+via a shell command — there's no GUI button by design (the island
+itself is output-only).
+
+### CLI
+
+After install, the `island-timer` script is at `./bin/island-timer`.
+The installer also symlinks it into `~/.local/bin/`, so if that
+directory is on your `PATH` you can invoke it directly:
+
+```bash
+island-timer start 25m "Pomodoro"      # 25-minute labeled timer
+island-timer start 1500                # 25 minutes, no label
+island-timer start 1h30m "Deep work"   # compound duration
+island-timer cancel                    # stop current timer
+island-timer extend 300                # add 5 minutes to current
+```
+
+Duration accepts plain seconds or h/m/s suffixes in any combination.
+
+### Persistence
+
+A running timer survives plasmashell restarts — the start time and
+duration are stored in the plasmoid's config. If plasmashell was
+down when the timer expired, the expiry notification fires on the
+next plasmashell startup.
+
+### Expiry
+
+When a timer expires, a Critical-urgency notification is fired via
+the standard freedesktop notification service. This means:
+
+- It appears in your regular KDE notification history.
+- It also triggers the island's own `notificationCritical` state
+  (220×64 expanded capsule) — a self-loop so the expiry is visible
+  on the island itself in addition to the standard popup.
+
+### Global shortcut binding (recommended)
+
+To bind `island-timer start 25m "Pomodoro"` to a global hotkey:
+
+1. System Settings → Keyboard → Shortcuts → Custom Shortcuts
+2. Edit → New → Global Shortcut → Command/URL
+3. Name: "Start Pomodoro"
+4. Trigger: your chosen shortcut (e.g. Meta+P)
+5. Action → Command: `island-timer start 25m "Pomodoro"`
+6. Apply
+
+### Protocol details
+
+If you want to integrate the island with other tools, the control
+file is:
+
+```
+~/.local/state/plasma-dynamic-island/timer.json
+```
+
+Write a JSON object with an `op` field:
+
+```json
+{"op":"start","duration":1500,"label":"Pomodoro","nonce":123}
+{"op":"cancel","nonce":456}
+{"op":"extend","seconds":300,"nonce":789}
+```
+
+`nonce` can be any value (integer, string); its only job is to make
+repeated writes with identical other params produce different bytes
+(defeating the content-hash dedupe). Use `date +%s%N` or a UUID.
+
 ## Repository layout
 
 - `contents/ui/`: plasmoid QML sources

@@ -41,6 +41,9 @@ PlasmaCore.Dialog {
         if (_displayState === "progress") {
             return "content/ProgressContent.qml"
         }
+        if (_displayState === "timer") {
+            return "content/TimerContent.qml"
+        }
         return ""
     }
 

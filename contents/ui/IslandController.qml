@@ -7,7 +7,7 @@ QtObject {
 
     readonly property var stateDefs: ({
         idle:                 { priority: 0, persistent: true,  width: 140, expandedHeight: 0  },
-        timer:                { priority: 1, persistent: true,  width: 160, expandedHeight: 48 },
+        timer:                { priority: 1, persistent: true,  width: 200, expandedHeight: 52 },
         media:                { priority: 2, persistent: true,  width: 240, expandedHeight: 60 },
         progress:             { priority: 3, persistent: true,  width: 220, expandedHeight: 52 },
         notification:         { priority: 4, persistent: false, defaultTimeout: 5000, width: 200, expandedHeight: 56 },
